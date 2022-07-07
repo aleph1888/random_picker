@@ -39,8 +39,15 @@ router.get('/', function(req, res, next) {
 
     picked = getFile(listFile);
 
+    if (picked.length == max) {
+        res.send("¡Ya salieron todos!");
+        return;
+    }
+
     var randomPick;
     var found = false;
+
+
     while (!found) {
         randomPick = pick(max);
         found = picked.indexOf(randomPick) == -1;
