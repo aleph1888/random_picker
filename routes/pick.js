@@ -39,7 +39,7 @@ router.get('/', function(req, res, next) {
 
     picked = getFile(listFile);
 
-    if (picked.length == max) {
+    if (picked.length >= max) {
         res.send("¡Ya salieron todos!");
         return;
     }
