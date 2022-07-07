@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="javascripts/progressbar.js"></script>
+
+    <script>
+      var bar;
+
+      function refrescarSacados(clave) {
+        var xmlHttp = new XMLHttpRequest();
+
+          xmlHttp.open( "GET", './pick/sacados?lista=' + clave, false ); // false for synchronous request
+          xmlHttp.send( null );
+
+          document.getElementById('sacados').innerHTML = xmlHttp.responseText;
+      }
+
+      function pick() {
+        // https://kimmobrunfeldt.github.io/progressbar.js/
+
+        if (!bar) {
+          bar = new ProgressBar.Line('#container', {easing: 'easeInOut'});
+        }
+
+        bar.animate(1);
+
+        setTimeout(function() {
+
+          bar.animate(0);
+
+          var clave = document.getElementById('txtClave').value;
+          var max = document.getElementById('txtMax').value;
+
+          var xmlHttp = new XMLHttpRequest();
+
+          xmlHttp.open( "GET", './pick?lista=' + clave + '&max=' + max, false ); // false for synchronous request
+          xmlHttp.send( null );
+
+          document.getElementById('txtNumber').innerHTML = xmlHttp.responseText;
+
+
+          refrescarSacados(clave);
+        }, 1100);
+
+      }
+
+      function init() {
+        var clave = document.getElementById('txtClave').value;
+        var valores = document.getElementById('txtInit').value;
+
+        var xmlHttp = new XMLHttpRequest();
+
+        xmlHttp.open( "GET", './pick/init?lista=' + clave + '&valores=' + valores, false ); // false for synchronous request
+        xmlHttp.send( null );
+
+        refrescarSacados(clave);
+
+      }
+    </script>
+
+  </head>
+  <body>
+    <input type="button" onclick="pick()" value="Sacar número" />
+    <div width="25px" id="container"></div>
+    <font size="100"><h1 id="txtNumber" syt><%= title %></h1></font>
+
+    <hr>
+
+    <p>
+      <ul>
+        <li>Desde el 1 hasta el... <input id="txtMax" type="text" value="168"/></li>
+        <li>Clave secreta (letras sin símbolos raros) [cada vez que vuelvas a la página usa la misma clave para guardar los valores ya extraídos de un día para otro]
+           <input id="txtClave" type="text"  /></li>
+        <li>Inicializar la clave con valores, en plan: [3, 6, 67]
+          <textarea id="txtInit" rows="4" cols="50">
+            []
+          </textarea><input type="button" onclick="init()" value="Inicializar" /></li>
+      </ul>
+    </p>
+    <div id="sacados"></div>
+  </body>
+</html>
