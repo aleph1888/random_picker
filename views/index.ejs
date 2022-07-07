@@ -8,13 +8,20 @@
     <script>
       var bar;
 
-      function refrescarSacados(clave) {
+      function refrescarSacados() {
+
+        var clave = document.getElementById('txtClave').value;
         var xmlHttp = new XMLHttpRequest();
 
-          xmlHttp.open( "GET", './pick/sacados?lista=' + clave, false ); // false for synchronous request
-          xmlHttp.send( null );
+        xmlHttp.open( "GET", './pick/sacados?lista=' + clave, false ); // false for synchronous request
+        xmlHttp.send( null );
 
-          document.getElementById('sacados').innerHTML = xmlHttp.responseText;
+        document.getElementById('sacados').innerHTML = xmlHttp.responseText;
+
+        var salido = JSON.parse(xmlHttp.responseText).length;
+        var total = parseInt(document.getElementById('txtMax').value);
+        document.getElementById('txtHanSalido').innerHTML = "Han salido: " + salido;
+        document.getElementById('txtFaltan').innerHTML = "Faltan: " + (total - salido);
       }
 
       function pick() {
@@ -41,7 +48,7 @@
           document.getElementById('txtNumber').innerHTML = xmlHttp.responseText;
 
 
-          refrescarSacados(clave);
+          refrescarSacados();
         }, 900);
 
       }
@@ -55,30 +62,59 @@
         xmlHttp.open( "GET", './pick/init?lista=' + clave + '&valores=' + valores, false ); // false for synchronous request
         xmlHttp.send( null );
 
-        refrescarSacados(clave);
+        refrescarSacados();
 
       }
     </script>
 
   </head>
   <body>
-    <input type="button" onclick="pick()" value="Sacar número" />
-    <div width="25px" id="container"></div>
-    <font size="100"><h1 id="txtNumber" syt><%= title %></h1></font>
+
+    <div class="contenedor1">
+      <input type="button" onclick="pick()" value="Sacar número" />
+      <div width="25px" id="container"></div>
+      <font size="100"><h1 id="txtNumber" syt><%= title %></h1></font>
+    </div>
 
     <hr>
 
     <p>
       <ul>
-        <li>Desde el 1 hasta el... <input id="txtMax" type="text" value="168"/></li>
-        <li>Clave secreta (letras sin símbolos raros) [cada vez que vuelvas a la página usa la misma clave para guardar los valores ya extraídos de un día para otro]
-           <input id="txtClave" type="text"  /></li>
-        <li>Inicializar la clave con valores, en plan: [3, 6, 67]
-          <textarea id="txtInit" rows="4" cols="50">
-            []
-          </textarea><input type="button" onclick="init()" value="Inicializar" /></li>
+        <li>Desde el 1 hasta el...
+          <input id="txtMax" type="text" value="163"/>
+        </li>
       </ul>
     </p>
-    <div id="sacados"></div>
+    <div id="sacados" class="contenedor"></div>
+    <div id="txtHanSalido"></div>
+    <div id="txtFaltan"></div>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <p>
+      <ul>
+        <li>Clave secreta:  <input id="txtClave" type="text"  />   <br>
+           (letras sin símbolos raros) <br>
+           [cada vez que vuelvas a la página usa la misma clave para guardar los valores ya extraídos de un día para otro]
+           <br> Una vez hayas puesto la clave, puedes leerla y traer los valores que tuviera: <input type="button" onclick="refrescarSacados()" value="Recuperar" />
+        </li>
+        <li>Editar la clave con valores: <br>
+           en plan: [3, 6, 67] 
+          <br>
+          (por si no quieres partir de lista vacía o tienes que añadir algún valor manualmente, tipo: añadir el 115 sin que salga en el random)
+          <br>
+          <textarea id="txtInit" rows="4" cols="50">
+            []
+          </textarea>
+          <br>
+          <input type="button" onclick="init()" value="Enviar" /></li>
+      </ul>
+    </p>
+
+    actualizado, viernes 8 de julio 2022
   </body>
 </html>
